@@ -1,3 +1,61 @@
+.age{
+  position: absolute;
+  z-index: 1000;
+  text-align: center;
+  width: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.helpIcon{
+  justify-content: end;
+  display: flex;
+}
+
+.help{
+  color: white;
+  padding: 10px;
+  top: 0;
+  left: 0;
+  position: absolute; 
+}
+
+
+
+
+.casinos{
+  color:rgb(132, 33, 33);
+  font-size: 2.5rem;
+}
+
+.motzi{
+  color: white;
+  font-size: 2.5rem;
+}
+.ageBestätigen{
+  color: white;
+  font-size: 1.5rem;
+
+}
+
+#over {
+  background: #3f4e40;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+
 
 body {
   display: flex;
@@ -101,13 +159,13 @@ body {
   align-items: center;
   display: block;
   margin: 10px;
-  font-size: 18px;
+  font-size: 16px;
   background-color: #ff0000;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  padding: 8px;
+  padding: 12px;
 }
 
 

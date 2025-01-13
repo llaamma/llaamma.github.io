@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Slot-Machine Help</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="help">
+      <h1>Erklärung des Spieles</h1>
+      <p>
+        Das Slotgame ist recht simple. Es gibt 3 sogennante "Reels" die nicht
+        als Symbole sondern als Bildern dargestellt. Die Bilder sind die Lehrer
+        unserer Schule. Wenn man 3 gleiche Lehrer hat gewinnt man, angepasst auf
+        den Einsatzt ein gewisses Geld. Wenn man nur 2 gleiche Lehrer hat,
+        gewinnt man trotzdem noch etwas. Ablauf des Spieles:
+      </p>
+      <ol>
+        <li>Älter als 18 sein</li>
+        <li>Knopf drücken</li>
+        <li>Gewinnen oder Verlieren</li>
+      </ol>
+      <h3>Shortcuts:</h3>
+      <ul>
+        <li>F1: Help Page</li>
+        <li>ESC: Slot Machine Page</li>
+      </ul>
+    </div>
+
+    <script>
+      document.addEventListener("keydown", (event) => {
+        if (event.code === "Escape") {
+          event.preventDefault();
+          window.location.href = "./index.html";
+        }
+      });
+    </script>
+  </body>
+</html>
