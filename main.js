@@ -1,4 +1,4 @@
-import SlotMachine from "./slotMachine";
+import SlotMachine from "./SlotMachine.js";
 
 //! alter überprüft und
 document.addEventListener("DOMContentLoaded", () => {
@@ -53,40 +53,47 @@ const spin = () => {
   result.textContent = "Spinning....";
 
   [reel1, reel2, reel3].forEach((reel) => {
-    //? drehen der Reels
-    reel.style.transition = `spinReel 500ms linear infinite`;
     reel.classList.add("spinning");
   });
 
-  let spins = 0;
-  const spinInterval = setInterval(() => {
-    const randomReels = slotMachine.teachers.map((teacher) => teacher.image); //? Zufällige Auswahl von Lehrern
-    updateReel(randomReels.sort(() => Math.random() - 0.5)); //? Sortieren der Lehrer
-    spins++;
+  const spinResult = slotMachine.spin(10);
 
-    //? Überprüfung ob genug gedreht wurde
-    if (spins >= 10) {
-      clearInterval(spinInterval);
-      const spinResult = slotMachine.spin(10);
+  setTimeout(() => {
+    reel1.classList.remove("spinning");
+    reel1.classList.add("stopping");
+    reel1.style.backgroundImage = `url('${spinResult.reels[0]}')`;
+  }, 1500);
 
-      [reel1, reel2, reel3].forEach((reel, index) => {
-        //? Drehen der Reels
-        reel.classList.remove("spinning"); //? Entfernen des Spinning Effekts
-        reel.style.backgroundImage = `url('${spinResult.reels[index]}')`; //? Anzeigen der Lehrer
+  setTimeout(() => {
+    reel2.classList.remove("spinning");
+    reel2.classList.add("stopping");
+    reel2.style.backgroundImage = `url('${spinResult.reels[1]}')`;
+  }, 2300);
+
+  setTimeout(() => {
+    reel3.classList.remove("spinning");
+    reel3.classList.add("stopping");
+    reel3.style.backgroundImage = `url('${spinResult.reels[2]}')`;
+
+    setTimeout(() => {
+      [reel1, reel2, reel3].forEach((reel) => {
+        reel.classList.remove("stopping");
       });
 
       result.textContent = spinResult.message;
       balanceDisplay.textContent = `Balance: €${spinResult.balance.toFixed(2)}`;
 
+      //? spiele musik
       if (spinResult.audio) {
-        //? Abspielen der Musik
         currentAudio = new Audio(spinResult.audio);
         currentAudio.play();
       }
+
       spinBtn.disabled = slotMachine.getBalance() < 10;
-    }
-  }, 200);
+    }, 500);
+  }, 2700);
 };
+
 //? Funktion zum starten des Auto Spins
 const startAuto = () => {
   if (autoSpinInterval) {
