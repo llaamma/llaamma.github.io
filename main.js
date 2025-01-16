@@ -11,13 +11,15 @@ document.addEventListener("DOMContentLoaded", () => {
     ageVerification.style.display = "none";
     mainContent.style.display = "block";
   });
+  const initialImages = slotMachine.reelStates.map((reel) =>
+    reel.map((index) => slotMachine.teachers[index].image)
+  );
+  updateReel(initialImages);
 });
 
 //? Initialisierung der Variablen
 const slotMachine = new SlotMachine();
-const reel1 = document.getElementById("reel1");
-const reel2 = document.getElementById("reel2");
-const reel3 = document.getElementById("reel3");
+
 const spinBtn = document.getElementById("spin");
 const balanceDisplay = document.getElementById("score");
 const result = document.getElementById("result");
@@ -27,11 +29,16 @@ var autoSpinInterval = null;
 
 //? Funktion zum aktualisieren der Reels
 function updateReel(reelImages) {
-  [reel1, reel2, reel3].forEach((reel, index) => {
-    reel.style.backgroundImage = `url('${reelImages[index]}')`;
-    reel.style.backgroundSize = "cover";
-    reel.style.backgroundPosition = "center";
-  });
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      const reel = document.getElementById(
+        `reel${i + 1}-${j === 0 ? "top" : j === 1 ? "middle" : "bottom"}`
+      );
+      reel.style.backgroundImage = `url('${reelImages[i][j]}')`;
+      reel.style.backgroundSize = "cover";
+      reel.style.backgroundPosition = "center";
+    }
+  }
 }
 
 //? Funktion zum stoppen des aktuellen Musik
@@ -42,7 +49,6 @@ function stopCurrentAudio() {
   }
 }
 
-//? Funktionen zum drehen des Slots
 const spin = () => {
   if (spinBtn.disabled || slotMachine.getBalance() <= 10) {
     return;
@@ -52,46 +58,43 @@ const spin = () => {
   spinBtn.disabled = true;
   result.textContent = "Spinning....";
 
-  [reel1, reel2, reel3].forEach((reel) => {
-    reel.classList.add("spinning");
+  document.querySelectorAll(".reel").forEach((reel, index) => {
+    setTimeout(() => {
+      reel.classList.remove("stopping");
+      reel.classList.add("spinning");
+    }, index * 100);
   });
 
   const spinResult = slotMachine.spin(10);
 
-  setTimeout(() => {
-    reel1.classList.remove("spinning");
-    reel1.classList.add("stopping");
-    reel1.style.backgroundImage = `url('${spinResult.reels[0]}')`;
-  }, 1500);
+  const stopReel = (reelNumber) => {
+    const reelPositions = ["top", "middle", "bottom"];
+    reelPositions.forEach((pos) => {
+      const reel = document.getElementById(`reel${reelNumber}-${pos}`);
+      reel.classList.remove("spinning");
+      void reel.offsetWidth;
+      reel.classList.add("stopping");
+    });
+    updateReel(spinResult.reelImages);
+  };
 
+  setTimeout(() => stopReel(1), 1500);
+  setTimeout(() => stopReel(2), 2000);
   setTimeout(() => {
-    reel2.classList.remove("spinning");
-    reel2.classList.add("stopping");
-    reel2.style.backgroundImage = `url('${spinResult.reels[1]}')`;
-  }, 2300);
+    stopReel(3);
 
-  setTimeout(() => {
-    reel3.classList.remove("spinning");
-    reel3.classList.add("stopping");
-    reel3.style.backgroundImage = `url('${spinResult.reels[2]}')`;
+    result.textContent = spinResult.message;
+    balanceDisplay.textContent = `Balance: €${spinResult.balance.toFixed(2)}`;
+
+    if (spinResult.audio) {
+      currentAudio = new Audio(spinResult.audio);
+      currentAudio.play();
+    }
 
     setTimeout(() => {
-      [reel1, reel2, reel3].forEach((reel) => {
-        reel.classList.remove("stopping");
-      });
-
-      result.textContent = spinResult.message;
-      balanceDisplay.textContent = `Balance: €${spinResult.balance.toFixed(2)}`;
-
-      //? spiele musik
-      if (spinResult.audio) {
-        currentAudio = new Audio(spinResult.audio);
-        currentAudio.play();
-      }
-
       spinBtn.disabled = slotMachine.getBalance() < 10;
     }, 500);
-  }, 2700);
+  }, 2500);
 };
 
 //? Funktion zum starten des Auto Spins

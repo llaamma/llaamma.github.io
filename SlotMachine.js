@@ -2,9 +2,9 @@ class SlotMachine {
   constructor(houseEdge = 0.1) {
     this.houseEdge = houseEdge;
     this.rtp = 1 - houseEdge;
-    this.balance = 500; //!initialisiere Geld
+    this.balance = 500; //?initialisiere Geld
     this.teachers = [
-      //! Array mit Lehrern mit Bildern, Audios, multipliere und Texte
+      //! add better songs for each teacher, spinning music, payment system also needs rework
       {
         name: "Dro",
         image: "./images/csm_Droegsler_d0469e0697.png",
@@ -15,21 +15,21 @@ class SlotMachine {
       {
         name: "Fuchs",
         image: "./images/csm_Fuchs_Harald_bf3d5a4181.jpg",
-        audio: "./music/i don't wanna be me best part.mp3 ",
+        audio: "./music/i don't wanna be me best part.mp3",
         text: "MAGNETO FUCHS",
         multiplier: 2,
       },
       {
         name: "hx05",
         image: "./images/csm_Personal_Hoedl_Josef_b82544fee5.jpg",
-        audio: "./music/i don't wanna be me best part.mp3 ",
+        audio: "./music/i don't wanna be me best part.mp3",
         text: "HX05 GANG",
         multiplier: 3,
       },
       {
         name: "masswohl",
         image: "./images/masswohl.jpg",
-        audio: "./music/i don't wanna be me best part.mp3 ",
+        audio: "./music/i don't wanna be me best part.mp3",
         text: "maswohl",
         multiplier: 1.5,
       },
@@ -48,6 +48,24 @@ class SlotMachine {
         multiplier: 2,
       },
     ];
+
+    this.reelStates = [
+      [0, 0, 0],
+      [0, 0, 0],
+      [0, 0, 0],
+    ];
+
+    this.randomizeReels();
+  }
+
+  randomizeReels() {
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        this.reelStates[i][j] = Math.floor(
+          Math.random() * this.teachers.length
+        );
+      }
+    }
   }
 
   //? Funktion zum drehen des Slots
@@ -61,32 +79,32 @@ class SlotMachine {
       };
     }
     this.balance -= bet;
-
+    this.randomizeReels();
     //? Zufällige Auswahl von Lehrern
-    const outcome = [
-      Math.floor(Math.random() * this.teachers.length),
-      Math.floor(Math.random() * this.teachers.length),
-      Math.floor(Math.random() * this.teachers.length),
-    ];
-    const reels = outcome.map((index) => this.teachers[index].image); //? Array mit Bildern der Lehrer
+
+    const middleRow = this.reelStates.map((reel) => reel[1]);
+    const reelImages = this.getCurrentImages();
+
     let payout = 0;
     let message = "gschissn gschmissn";
     let audio = null;
 
-    if (outcome[0] === outcome[1] && outcome[1] === outcome[2]) {
+    if (middleRow[0] === middleRow[1] && middleRow[1] === middleRow[2]) {
       //? checke über leherer gleich
-      const teacher = this.teachers[outcome[0]];
+      const teacher = this.teachers[middleRow[0]];
       payout = bet * teacher.multiplier * (1 + Math.random()); //? multipliziere den Gewinn
       message = teacher.text;
       audio = teacher.audio;
+      // reel.classList.add("won");  //!add effect when won something
     } else if (
       //? checke ob 2 Lehrer gleich sind
-      outcome[0] === outcome[1] ||
-      outcome[1] === outcome[2] ||
-      outcome[2] === outcome[0]
+      middleRow[0] === middleRow[1] ||
+      middleRow[1] === middleRow[2] ||
+      middleRow[2] === middleRow[0]
     ) {
       payout = bet * (1.5 + Math.random() * 0.5); //? multipliziere den Gewinn
       message = "nicht ganz";
+      // reel.classList.add("won");
     } else {
       message = "gschissn gschmissn";
     }
@@ -97,10 +115,16 @@ class SlotMachine {
     return {
       message,
       payout: adjustedPayout,
-      reels,
+      reelImages,
       audio,
       balance: this.balance,
     };
+  }
+
+  getCurrentImages() {
+    return this.reelStates.map((reel) => {
+      return reel.map((index) => this.teachers[index].image);
+    });
   }
 
   getBalance() {

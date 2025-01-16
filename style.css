@@ -10,6 +10,7 @@
 .helpIcon{
   justify-content: end;
   display: flex;
+ 
 }
 
 .help{
@@ -19,9 +20,6 @@
   left: 0;
   position: absolute; 
 }
-
-
-
 
 .casinos{
   color:rgb(132, 33, 33);
@@ -68,14 +66,19 @@ body {
 }
 
 .slotMachine {
+  width: 600px;
+  height: 95vh;
   background-color: #333333;
   border: 10px solid transparent;
-  padding: 30px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   animation: borderGradient  150ms linear infinite; 
   border-image: linear-gradient(70deg, #ff0000, #00ff00, #0000ff, #ff00ff) 2; 
 }
+
 
 @keyframes borderGradient {
   0% {
@@ -96,32 +99,78 @@ body {
 }
 
 .reels {
+  height: 450px;
   display: flex;
-  gap: 20px;
+  gap: 10px;
   margin-bottom: 20px;
+  background: linear-gradient(145deg, #919191, #d4d4d4);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 
+    inset 0 0 15px rgba(0,0,0,0.2),
+    0 5px 15px rgba(0,0,0,0.3);
+}
+.reel-column{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: white;
+  padding: 5px;
+  border-radius: 8px;
+  box-shadow: 
+    inset 0 0 10px rgba(0,0,0,0.2),
+    0 0 5px rgba(0,0,0,0.1);
 }
 
-
 .reel {
-  width: 300px;
-  height: 300px;
-  border: 10px solid transparent;
-  border-radius: 25px;
+  width: 150px;
+  height: 150px;
+  border: none;
+  border-radius: 4px;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
   background-size: cover;
   background-position: center;
-  transform: translate3d(0, 0, 0);
-  will-change: transform, background-position;
-  backface-visibility: hidden;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  animation: borderGradient  500ms linear infinite; 
-  border-image: linear-gradient(45deg, #ff0000, #00ff00, #0000ff, #ff00ff) 1; 
+  transform: translateZ(0);
+  will-change: transform, filter;
+  transition: filter 0.2s ease;
+  position: relative;
 }
+.reel::after{
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.2) 0%,
+    rgba(255,255,255,0) 20%,
+    rgba(0,0,0,0) 80%,
+    rgba(0,0,0,0.2) 100%
+  );
+  pointer-events: none;
+}
+.controls-container {
+
+  
+ 
+  border-radius: 10px;
+
+}
+
+.bottom-controls {
+  display: flex;
+
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
 
 @keyframes borderGradient {
   0% {
@@ -143,7 +192,7 @@ body {
 
 #spin {
   display: block;
-  width: 100%;
+  width: 600px;
   padding: 20px;
   font-size: 28px;
   background-color: #4CAF50;
@@ -151,7 +200,15 @@ body {
   border: none;
   border-radius: 20px;
   cursor: pointer;
-  
+}
+
+#spin:active{
+  #spin:hover{
+    transform: translateY(-1px);
+    box-shadow: 
+    0 2px 4px rgba(0,0,0,0.1),
+    0 1px 2px rgba(0,0,0,0.1);
+  }
 }
 
 #result, #score {
@@ -160,8 +217,8 @@ body {
   color: white;
 }
 .autospin{
-  align-items: center;
-  display: block;
+  align-items: start;
+
   margin: 10px;
   font-size: 16px;
   background-color: #ff0000;
@@ -174,33 +231,38 @@ body {
 
 
 .spinning {
-  animation: spinReel 0.25s linear infinite;
-  transform: translate3d(0, 0, 0);
-
+  animation: spinReel 0.5s linear infinite;
+  filter: blur(1px);
+  transform: translateZ(0);
 }
 
 
 
 
 @keyframes spinReel {
-  from {
-    background-position: center 0;
+  0% {
+    background-position: 0 0;
   }
-  to {
-    background-position: 0 1000px;
+  100% {
+    background-position: 0 -1000%;
   }
 }
 
 .stopping {
   animation: stopReel 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-  transform: translate3d(0, 0, 0);
+  transform: translateZ(0);
 }
 @keyframes stopReel {
   0% {
-    background-position: 0 -m,1000px;
+    background-position: 0 1000%;
+    filter: blur(2px);
+  }
+  50% {
+    filter: blur(1px);
   }
   100% {
     background-position: center;
+    filter: blur(0);
   }
 }
 
