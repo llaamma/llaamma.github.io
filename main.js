@@ -55,8 +55,17 @@ const spin = () => {
   }
 
   stopCurrentAudio();
+
   spinBtn.disabled = true;
   result.textContent = "Spinning....";
+  var audio = new Audio("./music/mixkit-slot-machine-random-wheel-1930.wav");
+  audio.play();
+  document.querySelectorAll(".reel").forEach((reel) => {
+    if (reel.id.includes("top") || reel.id.includes("bottom")) {
+      reel.style.opacity = "0.5";
+      reel.style.filter = "brightness(0.7)";
+    }
+  });
 
   document.querySelectorAll(".reel").forEach((reel, index) => {
     setTimeout(() => {
@@ -85,14 +94,16 @@ const spin = () => {
 
     result.textContent = spinResult.message;
     balanceDisplay.textContent = `Balance: €${spinResult.balance.toFixed(2)}`;
-
-    if (spinResult.audio) {
-      currentAudio = new Audio(spinResult.audio);
-      currentAudio.play();
-    }
+    setTimeout(() => {
+      if (spinResult.audio) {
+        stopCurrentAudio();
+        currentAudio = new Audio(spinResult.audio.src);
+        currentAudio.play();
+      }
+    }, 300);
 
     setTimeout(() => {
-      spinBtn.disabled = slotMachine.getBalance() < 10;
+      spinBtn.disabled = slotMachine.getBalance() <= 10;
     }, 500);
   }, 2500);
 };
